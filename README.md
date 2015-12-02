@@ -32,3 +32,7 @@ To sum up: O(n log n) comparisons, O(n) memory, but only for iterators, not for
 actual values. The current version is unstable because it uses `std::sort` to sort
 the iterators, but it could easily be made stable by using `std::stable_sort` or
 any other stable sorting algorithm instead.
+
+
+  [1]: https://en.wikipedia.org/wiki/Cycle_sort
+  [2]: http://www.geocities.ws/p356spt/
