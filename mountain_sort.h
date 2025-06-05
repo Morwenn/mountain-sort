@@ -1,9 +1,9 @@
 /*
- * vergesort.h - General-purpose hybrid sort
+ * mountain_sort.h - The best algorithm to sort mountains
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Morwenn <morwenn29@hotmail.fr>
+ * Copyright (c) 2015-2025 Morwenn <morwenn29@hotmail.fr>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@
 ////////////////////////////////////////////////////////////
 #include <algorithm>
 #include <functional>
-#include <iterator>
 #include <utility>
 #include <vector>
 
@@ -45,12 +44,19 @@ namespace mountain_sort_detail
     {
         public:
 
-            indirect_compare(Compare compare):
+            explicit indirect_compare(Compare compare):
                 compare(compare)
             {}
 
             template<typename Iterator>
             auto operator()(Iterator lhs, Iterator rhs)
+                -> bool
+            {
+                return compare(*lhs, *rhs);
+            }
+
+            template<typename Iterator>
+            auto operator()(Iterator lhs, Iterator rhs) const
                 -> bool
             {
                 return compare(*lhs, *rhs);
@@ -75,31 +81,31 @@ auto mountain_sort(RandomAccessIterator first, RandomAccessIterator last,
 
     // Copy the iterators in a vector
     std::vector<RandomAccessIterator> iterators;
-    iterators.reserve(std::distance(first, last));
-    for (RandomAccessIterator it = first ; it != last ; ++it)
+    iterators.reserve(last - first);
+    for (auto it = first ; it != last ; ++it)
     {
         iterators.push_back(it);
     }
     // Sort the iterators on pointed values
-    std::sort(std::begin(iterators), std::end(iterators),
-              mountain_sort_detail::indirect_compare<Compare>(compare));
+    std::sort(iterators.begin(), iterators.end(),
+              mountain_sort_detail::indirect_compare<Compare>(std::move(compare)));
 
     ////////////////////////////////////////////////////////////
     // Move the values according the iterator's positions
 
     if (first == last) return;
 
-    std::vector<bool> sorted(std::distance(first, last), false);
+    std::vector<bool> sorted(last - first, false);
 
     // Element where the current cycle starts
-    RandomAccessIterator start = first;
+    auto start = first;
 
     while (start != last)
     {
         // Find the element to put in current's place
-        RandomAccessIterator current = start;
-        auto next_pos = std::distance(first, current);
-        RandomAccessIterator next = iterators[next_pos];
+        auto current = start;
+        auto next_pos = current - first;
+        auto next = iterators[next_pos];
         sorted[next_pos] = true;
 
         // Process the current cycle
@@ -110,7 +116,7 @@ auto mountain_sort(RandomAccessIterator first, RandomAccessIterator last,
             {
                 *current = std::move(*next);
                 current = next;
-                auto next_pos = std::distance(first, next);
+                auto next_pos = next - first;
                 next = iterators[next_pos];
                 sorted[next_pos] = true;
             }
