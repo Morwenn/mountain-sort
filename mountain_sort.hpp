@@ -1,5 +1,5 @@
 /*
- * mountain_sort.h - The best algorithm to sort mountains
+ * mountain_sort.hpp - The best algorithm to sort mountains
  *
  * The MIT License (MIT)
  *

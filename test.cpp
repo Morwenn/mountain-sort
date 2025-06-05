@@ -1,5 +1,5 @@
 /*
- * mountain_sort.h - The best algorithm to sort mountains
+ * mountain_sort.hpp - The best algorithm to sort mountains
  *
  * The MIT License (MIT)
  *
@@ -29,7 +29,7 @@
 #include <numeric>
 #include <random>
 #include <vector>
-#include "mountain_sort.h"
+#include "mountain_sort.hpp"
 
 int main()
 {
