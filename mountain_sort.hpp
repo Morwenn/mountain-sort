@@ -45,7 +45,7 @@ namespace mountain_sort_detail
         public:
 
             explicit indirect_compare(Compare compare):
-                compare(compare)
+                compare(std::move(compare))
             {}
 
             template<typename Iterator>
@@ -95,8 +95,6 @@ auto mountain_sort(RandomAccessIterator first, RandomAccessIterator last,
 
     if (first == last) return;
 
-    std::vector<bool> sorted(last - first, false);
-
     // Element where the current cycle starts
     auto start = first;
 
@@ -105,8 +103,9 @@ auto mountain_sort(RandomAccessIterator first, RandomAccessIterator last,
         // Find the element to put in current's place
         auto current = start;
         auto next_pos = current - first;
-        auto next = iterators[next_pos];
-        sorted[next_pos] = true;
+        // We replace all "sorted" iterators with last to make it
+        // possible to find unsorted iterators between cycles
+        auto next = std::exchange(iterators[next_pos], last);
 
         // Process the current cycle
         if (next != current)
@@ -117,8 +116,7 @@ auto mountain_sort(RandomAccessIterator first, RandomAccessIterator last,
                 *current = std::move(*next);
                 current = next;
                 auto next_pos = next - first;
-                next = iterators[next_pos];
-                sorted[next_pos] = true;
+                next = std::exchange(iterators[next_pos], last);
             }
             *current = std::move(tmp);
         }
@@ -128,7 +126,7 @@ auto mountain_sort(RandomAccessIterator first, RandomAccessIterator last,
         {
             ++start;
         }
-        while (start != last && sorted[start - first]);
+        while (start != last && iterators[start - first] == last);
     }
 }
 

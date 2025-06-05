@@ -25,8 +25,10 @@ iterators arrays.
 element of each cycle into a temporary then moves the other ones directly to their
 final place before relocating the first element of the cycle to its final position
 in the original collection.
-* Just like Exact-Sort, it also maintains a boolean array to tell which elements have
-already been moved to their final location and which ones are still to be moved.
+* Just like Exact-Sort, it remembers which elements have already been moved to their
+final location and which ones are still to be moved. However it reuses the iterator
+array instead of using another boolean array, marking already sorted elements with a
+sentinel value.
 
 To sum up: O(n log n) comparisons, O(n) memory, but only for iterators, not for
 actual values. The current version is unstable because it uses `std::sort` to sort
