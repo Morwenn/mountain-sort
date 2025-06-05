@@ -25,13 +25,28 @@ iterators arrays.
 element of each cycle into a temporary then moves the other ones directly to their
 final place before relocating the first element of the cycle to its final position
 in the original collection.
-* Just like Exact-Sort, it also maintains a booean array to tell which elements have
+* Just like Exact-Sort, it also maintains a boolean array to tell which elements have
 already been moved to their final location and which ones are still to be moved.
 
 To sum up: O(n log n) comparisons, O(n) memory, but only for iterators, not for
 actual values. The current version is unstable because it uses `std::sort` to sort
 the iterators, but it could easily be made stable by using `std::stable_sort` or
 any other stable sorting algorithm instead.
+
+### Using this project
+
+This project requires C++14 or a more recent version of C++. The only C++ file of
+the project can be copy-pasted at will and included as is, providing the following
+`mountain_sort` function, which acts as a drop-in replacement for `std::sort`:
+
+```cpp
+template<
+    typename RandomAccessIterator,
+    typename Compare = std::less<>
+>
+void mountain_sort(RandomAccessIterator first, RandomAccessIterator last,
+                   Compare compare={});
+```
 
 
   [1]: https://en.wikipedia.org/wiki/Cycle_sort
